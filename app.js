@@ -12,10 +12,9 @@ const options = {
     identityMetadata: `https://${config.credentials.tenantName}.b2clogin.com/${config.credentials.tenantName}.onmicrosoft.com/${config.policies.policyName}/${config.metadata.version}/${config.metadata.discovery}`,
     clientID: config.credentials.clientID,
     audience: config.credentials.clientID,
-    issuer: config.credentials.issuer,
     policyName: config.policies.policyName,
     isB2C: config.settings.isB2C,
-    scope: config.resource.scope,
+    scope: config.protectedRoutes.scopes,
     validateIssuer: config.settings.validateIssuer,
     loggingLevel: config.settings.loggingLevel,
     passReqToCallback: config.settings.passReqToCallback
@@ -55,7 +54,12 @@ app.get('/dashboard',
         console.log('Validated claims: ', req.authInfo);
 
         // Service relies on the name claim.
-        res.status(200).json({'name': req.authInfo['name']});
+        res.status(200).json({
+            'name': req.authInfo['name'],
+            'issued-by': req.authInfo['iss'],
+            'scope': req.authInfo['scp']
+        
+        });
     }
 );
 
